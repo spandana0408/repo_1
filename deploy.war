@@ -2,7 +2,18 @@ pipeline {
   agent { label 'node'}
   stages {
     stage ('checkout') {
-      
+      git branch: 'master', url: 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
+    }
+  }
+stages {
+    stage ('Build') {
+      sh 'mvn clean install -Dmaven.test.skip=true'
+    }
+  }
+stages {
+    stage ('Deploy') {
+      sh 'rsync -r /home/ec2-user/boxfuse-sample-java-war-hello/target/.*war /apache-tomcat-9.0.86/ webapps/'
+      echo "deploy is successful"
     }
   }
 }  
